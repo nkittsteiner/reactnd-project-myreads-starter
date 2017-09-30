@@ -1,6 +1,14 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class BookList extends Component {
+
+  static propTypes = {
+    currentlyReading: PropTypes.array.isRequired,
+    wantToRead: PropTypes.array.isRequired,
+    read: PropTypes.array.isRequired,
+    onOpenSearch: PropTypes.func.isRequired
+  }  
 
 	render(){
 

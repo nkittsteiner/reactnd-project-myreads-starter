@@ -16,7 +16,8 @@ class BooksApp extends React.Component {
     showSearchPage: false,
     currentlyReading: [],
     wantToRead: [],
-    read: []
+    read: [],
+    allBooks: []
   }
 
   componentDidMount = () => {
@@ -25,7 +26,8 @@ class BooksApp extends React.Component {
       this.setState((state) => ({
         currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
         wantToRead: books.filter(book => book.shelf === 'wantToRead'),
-        read: books.filter(book => book.shelf === 'read')
+        read: books.filter(book => book.shelf === 'read'),
+        allBooks: books
       }))
     })
   }
@@ -46,7 +48,8 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <SearchBook 
+          <SearchBook
+            books={this.state.allBooks} 
             onCloseSearch={this.closeSearch} />
         ) : (
           <BookList 
