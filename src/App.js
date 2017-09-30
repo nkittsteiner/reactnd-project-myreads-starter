@@ -36,6 +36,12 @@ class BooksApp extends React.Component {
     }))
   }
 
+  openSearch = () => {
+    this.setState((state) =>({
+      showSearchPage: true
+    }))
+  }  
+
   render() {
     return (
       <div className="app">
@@ -46,7 +52,8 @@ class BooksApp extends React.Component {
           <BookList 
             currentlyReading={this.state.currentlyReading} 
             wantToRead={this.state.wantToRead}
-            read={this.state.read} />
+            read={this.state.read} 
+            onOpenSearch={this.openSearch} />
         )}
       </div>
     )

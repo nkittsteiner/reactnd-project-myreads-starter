@@ -4,7 +4,7 @@ class BookList extends Component {
 
 	render(){
 
-		const { currentlyReading, wantToRead, read } = this.props
+		const { currentlyReading, wantToRead, read, onOpenSearch } = this.props
 
 		return(
           <div className="list-books">
@@ -97,7 +97,7 @@ class BookList extends Component {
               </div>
             </div>
             <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+              <a onClick={() => onOpenSearch() }>Add a book</a>
             </div>
           </div>
 		)
