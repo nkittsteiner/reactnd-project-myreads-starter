@@ -22,6 +22,13 @@ class SearchBook extends Component {
     this.setState({ query: '' })
   }  
 
+  updateBook = (event) => {
+    let bookId = event.target.id
+    let shelf = event.target.value
+    this.props.onChangeShelf(bookId, shelf)
+    this.props.onCloseSearch()
+  }
+
 	render(){
 
 		const { books, onCloseSearch } = this.props
@@ -59,7 +66,7 @@ class SearchBook extends Component {
                     <div className="book-top">
                       <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
                       <div className="book-shelf-changer">
-                        <select>
+                        <select id={book.id} value={book.shelf} onChange={this.updateBook} >
                           <option value="none" disabled>Move to...</option>
                           <option value="currentlyReading">Currently Reading</option>
                           <option value="wantToRead">Want to Read</option>

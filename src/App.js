@@ -22,7 +22,6 @@ class BooksApp extends React.Component {
 
   componentDidMount = () => {
     BooksAPI.getAll().then((books) => {
-      console.log('books', books)
       this.setState((state) => ({
         currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
         wantToRead: books.filter(book => book.shelf === 'wantToRead'),
@@ -44,19 +43,46 @@ class BooksApp extends React.Component {
     }))
   }  
 
+  changeShelf = (bookId, to) => {
+    // Get book by ID
+    BooksAPI.get(bookId).then((book) => {
+      if(book == null)
+        return
+      //Update book via API
+      BooksAPI.update(book, to).then((res) => {
+        console.log('UPDATE', res)
+        // TODO: Make update locally
+        BooksAPI.getAll().then((books) => {
+          this.setState((state) => ({
+            currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
+            wantToRead: books.filter(book => book.shelf === 'wantToRead'),
+            read: books.filter(book => book.shelf === 'read'),
+            allBooks: books
+          }))
+        })
+
+      })
+
+      
+    })
+
+  }
+
   render() {
     return (
       <div className="app">
         {this.state.showSearchPage ? (
           <SearchBook
             books={this.state.allBooks} 
-            onCloseSearch={this.closeSearch} />
+            onCloseSearch={this.closeSearch} 
+            onChangeShelf={this.changeShelf} />
         ) : (
           <BookList 
             currentlyReading={this.state.currentlyReading} 
             wantToRead={this.state.wantToRead}
             read={this.state.read} 
-            onOpenSearch={this.openSearch} />
+            onOpenSearch={this.openSearch} 
+            onChangeShelf={this.changeShelf} />
         )}
       </div>
     )
