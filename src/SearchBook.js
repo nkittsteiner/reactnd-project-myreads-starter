@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import sortBy from 'sort-by'
 import escapeRegExp from 'escape-string-regexp'
+import { Link } from 'react-router-dom'
 
 class SearchBook extends Component {
 
 	static propTypes = {
-    books: PropTypes.array.isRequired,
-		onCloseSearch: PropTypes.func.isRequired
+    books: PropTypes.array.isRequired
 	}
 
   state = {
@@ -26,12 +26,11 @@ class SearchBook extends Component {
     let bookId = event.target.id
     let shelf = event.target.value
     this.props.onChangeShelf(bookId, shelf)
-    this.props.onCloseSearch()
   }
 
 	render(){
 
-		const { books, onCloseSearch } = this.props
+		const { books } = this.props
     const { query } = this.state
 
     let showingBooks
@@ -49,7 +48,7 @@ class SearchBook extends Component {
 		return(
           <div className="search-books">
             <div className="search-books-bar">
-              <a className="close-search" onClick={() => onCloseSearch()}>Close</a>
+              <Link className="close-search" to='/'>Close</Link>
               <div className="search-books-input-wrapper">
                 <input 
                   type="text" 

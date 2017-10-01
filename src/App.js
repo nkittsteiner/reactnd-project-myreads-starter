@@ -1,5 +1,5 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import { Route } from 'react-router-dom'
 import './App.css'
 import SearchBook from './SearchBook'
 import BookList from './BookList'
@@ -7,12 +7,6 @@ import * as BooksAPI from './BooksAPI'
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
     books: []
   }
 
@@ -24,27 +18,13 @@ class BooksApp extends React.Component {
     })
   }
 
-  closeSearch = () => {
-    this.setState((state) =>({
-      showSearchPage: false
-    }))
-  }
-
-  openSearch = () => {
-    this.setState((state) =>({
-      showSearchPage: true
-    }))
-  }  
-
   changeShelf = (bookId, to) => {
     // Get book by ID
     BooksAPI.get(bookId).then((book) => {
       if(book == null)
         return
       //Update book via API
-      BooksAPI.update(book, to).then((res) => {
-           
-      })
+      BooksAPI.update(book, to)
 
       book.shelf = to
 
@@ -59,17 +39,21 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <SearchBook
-            books={this.state.books} 
-            onCloseSearch={this.closeSearch} 
-            onChangeShelf={this.changeShelf} />
-        ) : (
+        <Route exact path="/" render={() => (
           <BookList 
             books={this.state.books}
-            onOpenSearch={this.openSearch} 
             onChangeShelf={this.changeShelf} />
-        )}
+        )}/>
+
+        <Route path="/search" render={({ history }) => (
+          <SearchBook
+          books={this.state.books} 
+          onChangeShelf={(bookId, to) => {
+           this.changeShelf(bookId, to)
+           history.push('/') 
+         }} />
+        
+        )}/>
       </div>
     )
   }
