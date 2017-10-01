@@ -13,20 +13,13 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false,
-    currentlyReading: [],
-    wantToRead: [],
-    read: [],
-    allBooks: []
+    books: []
   }
 
   componentDidMount = () => {
     BooksAPI.getAll().then((books) => {
       this.setState((state) => ({
-        currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
-        wantToRead: books.filter(book => book.shelf === 'wantToRead'),
-        read: books.filter(book => book.shelf === 'read'),
-        allBooks: books
+        books: books
       }))
     })
   }
@@ -50,20 +43,15 @@ class BooksApp extends React.Component {
         return
       //Update book via API
       BooksAPI.update(book, to).then((res) => {
-        console.log('UPDATE', res)
-        // TODO: Make update locally
-        BooksAPI.getAll().then((books) => {
-          this.setState((state) => ({
-            currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
-            wantToRead: books.filter(book => book.shelf === 'wantToRead'),
-            read: books.filter(book => book.shelf === 'read'),
-            allBooks: books
-          }))
-        })
-
+           
       })
 
-      
+      book.shelf = to
+
+      this.setState((state) => ({
+        books: this.state.books.filter(b => b.id !== bookId).concat([book])
+      }))    
+
     })
 
   }
@@ -73,14 +61,12 @@ class BooksApp extends React.Component {
       <div className="app">
         {this.state.showSearchPage ? (
           <SearchBook
-            books={this.state.allBooks} 
+            books={this.state.books} 
             onCloseSearch={this.closeSearch} 
             onChangeShelf={this.changeShelf} />
         ) : (
           <BookList 
-            currentlyReading={this.state.currentlyReading} 
-            wantToRead={this.state.wantToRead}
-            read={this.state.read} 
+            books={this.state.books}
             onOpenSearch={this.openSearch} 
             onChangeShelf={this.changeShelf} />
         )}

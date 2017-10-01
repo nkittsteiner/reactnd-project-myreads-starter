@@ -4,9 +4,7 @@ import PropTypes from 'prop-types'
 class BookList extends Component {
 
   static propTypes = {
-    currentlyReading: PropTypes.array.isRequired,
-    wantToRead: PropTypes.array.isRequired,
-    read: PropTypes.array.isRequired,
+    books: PropTypes.array.isRequired,
     onOpenSearch: PropTypes.func.isRequired,
     onChangeShelf: PropTypes.func.isRequired
   }  
@@ -17,9 +15,11 @@ class BookList extends Component {
     this.props.onChangeShelf(bookId, shelf)
   }
 
+//books.filter(book => book.shelf === 'currentlyReading')
+
 	render(){
 
-		const { currentlyReading, wantToRead, read, onOpenSearch } = this.props
+		const { books, onOpenSearch } = this.props
 
 		return(
           <div className="list-books">
@@ -32,7 +32,7 @@ class BookList extends Component {
                   <h2 className="bookshelf-title">Currently Reading</h2>
                   <div className="bookshelf-books">
                     <ol className="books-grid">
-                    {currentlyReading.map((book) => (                    		   
+                    {books.filter(book => book.shelf === 'currentlyReading').map((book) => (                    		   
                       <li key={book.id}>
                         <div className="book">
                           <div className="book-top">
@@ -59,7 +59,7 @@ class BookList extends Component {
                   <h2 className="bookshelf-title">Want to Read</h2>
                   <div className="bookshelf-books">
                     <ol className="books-grid">
-                    {wantToRead.map((book) => (
+                    {books.filter(book => book.shelf === 'wantToRead').map((book) => (
                       <li key={book.id}>
                         <div className="book">
                           <div className="book-top">
@@ -86,7 +86,7 @@ class BookList extends Component {
                   <h2 className="bookshelf-title">Read</h2>
                   <div className="bookshelf-books">
                     <ol className="books-grid">
-                    {read.map((book) => (
+                    {books.filter(book => book.shelf === 'read').map((book) => (
                       <li key={book.id}>
                         <div className="book">
                           <div className="book-top">
