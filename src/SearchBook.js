@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import sortBy from 'sort-by'
-import escapeRegExp from 'escape-string-regexp'
 import { Link } from 'react-router-dom'
+import * as BooksAPI from './BooksAPI'
 
 class SearchBook extends Component {
 
@@ -11,16 +11,43 @@ class SearchBook extends Component {
 	}
 
   state = {
-    query: ''
+    query: '',
+    searchedBooks: []
+  }
+
+  bookExist(id, books){
+    books
   }
 
   updateQuery = (query) => {
     this.setState({ query: query.trim() })
+    //TODO: Fix bug when typing to fast, blocks text input.    
+    if(query.length >= 3 ){
+      BooksAPI.search(query, 20).then((data) => {
+        if(data.error === 'empty query'){
+          this.setState({ searchedBooks: [] })
+        }
+        else {
+          let finalList = data.map(book => {
+            
+            let savedBook = this.props.books.filter( x => x.id === book.id)[0]
+            console.log('savedBook', savedBook)
+            if(savedBook !== undefined)
+              return savedBook
+            else{
+              console.debug(savedBook, 'savedBook')
+              let b = book
+              b['shelf'] = 'none'
+              return b
+            }
+            
+          })
+          this.setState({ searchedBooks: finalList.sort(sortBy('title')) })
+        }
+        
+      })
+    }
   }
-
-  clearQuery = () => {
-    this.setState({ query: '' })
-  }  
 
   updateBook = (event) => {
     let bookId = event.target.id
@@ -30,20 +57,7 @@ class SearchBook extends Component {
 
 	render(){
 
-		const { books } = this.props
     const { query } = this.state
-
-    let showingBooks
-
-    if(query){
-      const match = new RegExp(escapeRegExp(query), 'i')
-      showingBooks = books.filter((book) => match.test(book.title) || match.test(book.authors))
-    }
-    else {
-      showingBooks = books
-    }    
-
-    showingBooks.sort(sortBy('title'))
 
 		return(
           <div className="search-books">
@@ -53,13 +67,13 @@ class SearchBook extends Component {
                 <input 
                   type="text" 
                   placeholder="Search by title or author"
-                  value={query} 
+                  value={query}
                   onChange={(event) => this.updateQuery(event.target.value)} />
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-              {showingBooks.map((book) => (
+              {(this.state.searchedBooks.length > 0) && this.state.searchedBooks.map((book) => (
                 <li key={book.id}>
                   <div className="book">
                     <div className="book-top">
@@ -79,6 +93,9 @@ class SearchBook extends Component {
                   </div>
                 </li>                
               ))}
+              {this.state.searchedBooks.length === 0 &&  (
+                <div>No books found based on criteria</div>
+                )}
               </ol>
             </div>
           </div>			
