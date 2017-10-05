@@ -15,7 +15,7 @@ If you have problems running this application, try removing the node_modules and
 
 ## TODOs
 
-* Fix a glitch when looking for certain criteria in the search bar (or typing to fast).
+* Fix glitch when typing for certain criteria in the search bar (maybe blovking occurs when typing too fast).
 
 
 ## Improvements
