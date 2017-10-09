@@ -3,20 +3,18 @@ import PropTypes from 'prop-types'
 import sortBy from 'sort-by'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
+import Book from './Book'
 
 class SearchBook extends Component {
 
-	static propTypes = {
-    books: PropTypes.array.isRequired
-	}
+  static propTypes = {
+    books: PropTypes.array.isRequired,
+    onChangeShelf: PropTypes.func.isRequired
+  }
 
   state = {
     query: '',
     searchedBooks: []
-  }
-
-  bookExist(id, books){
-    books
   }
 
   updateQuery = (query) => {
@@ -28,14 +26,11 @@ class SearchBook extends Component {
           this.setState({ searchedBooks: [] })
         }
         else {
-          let finalList = data.map(book => {
-            
+          let finalList = data.map(book => {            
             let savedBook = this.props.books.filter( x => x.id === book.id)[0]
-            console.log('savedBook', savedBook)
             if(savedBook !== undefined)
               return savedBook
             else{
-              console.debug(savedBook, 'savedBook')
               let b = book
               b['shelf'] = 'none'
               return b
@@ -49,17 +44,16 @@ class SearchBook extends Component {
     }
   }
 
-  updateBook = (event) => {
-    let bookId = event.target.id
-    let shelf = event.target.value
-    this.props.onChangeShelf(bookId, shelf)
-  }
+  changeShelf = (bookId, to) => {
+    this.props.onChangeShelf(bookId, to)
+  }  
 
-	render(){
+
+  render(){
 
     const { query } = this.state
 
-		return(
+    return(
           <div className="search-books">
             <div className="search-books-bar">
               <Link className="close-search" to='/'>Close</Link>
@@ -74,34 +68,19 @@ class SearchBook extends Component {
             <div className="search-books-results">
               <ol className="books-grid">
               {(this.state.searchedBooks.length > 0) && this.state.searchedBooks.map((book) => (
-                <li key={book.id}>
-                  <div className="book">
-                    <div className="book-top">
-                      <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
-                      <div className="book-shelf-changer">
-                        <select id={book.id} value={book.shelf} onChange={this.updateBook} >
-                          <option value="none" disabled>Move to...</option>
-                          <option value="currentlyReading">Currently Reading</option>
-                          <option value="wantToRead">Want to Read</option>
-                          <option value="read">Read</option>
-                          <option value="none">None</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="book-title">{book.title}</div>
-                    <div className="book-authors">{book.authors}</div>
-                  </div>
-                </li>                
+                <div key={book.id}>
+                  <Book book={book} onChangeShelf={this.changeShelf} />  
+                </div>
               ))}
               {this.state.searchedBooks.length === 0 &&  (
                 <div>No books found based on criteria</div>
                 )}
               </ol>
             </div>
-          </div>			
-		)
-	}
-	
+          </div>
+    )
+  }
+  
 }
 
 export default SearchBook

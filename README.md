@@ -23,3 +23,7 @@ If you have problems running this application, try removing the node_modules and
 * Search needs at least 3 letter word for searching. This minimize the number of requests to the server.
 
 
+## Search Terms
+
+* Using search component you can type for some keywords defined like **art** or **android** to test functionality.
+* You can take a look at some search terms defined for this assignment. Please look at [search terms file](./SEARCH_TERMS.md) for more examples.
